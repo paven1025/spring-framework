@@ -51,7 +51,6 @@ public class AnnotatedBeanDefinitionReader {
 
 	private ConditionEvaluator conditionEvaluator;
 
-
 	/**
 	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry.
 	 * If the registry is {@link EnvironmentCapable}, e.g. is an {@code ApplicationContext},

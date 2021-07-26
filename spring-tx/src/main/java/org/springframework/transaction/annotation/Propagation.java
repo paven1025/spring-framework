@@ -96,9 +96,7 @@ public enum Propagation {
 	 */
 	NESTED(TransactionDefinition.PROPAGATION_NESTED);
 
-
 	private final int value;
-
 
 	Propagation(int value) {
 		this.value = value;

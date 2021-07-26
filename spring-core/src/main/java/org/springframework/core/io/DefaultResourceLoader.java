@@ -43,12 +43,17 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultResourceLoader implements ResourceLoader {
 
+	/**
+	 * 类加载器
+	 */
 	private ClassLoader classLoader;
 
 	private final Set<ProtocolResolver> protocolResolvers = new LinkedHashSet<ProtocolResolver>(4);
 
 
 	/**
+	 *
+	 *
 	 * Create a new DefaultResourceLoader.
 	 * <p>ClassLoader access will happen using the thread context class loader
 	 * at the time of this ResourceLoader's initialization.
