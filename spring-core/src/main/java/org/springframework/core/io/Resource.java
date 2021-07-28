@@ -22,7 +22,7 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * 资源的统一抽象
+ * 资源的统一抽象，Resource定义了一些通用方法，子类AbstractResource提供统一的默认实现
  * <p>
  * Interface for a resource descriptor that abstracts from the actual
  * type of underlying resource, such as a file or class path resource.
@@ -73,7 +73,7 @@ public interface Resource extends InputStreamSource {
     boolean isReadable();
 
     /**
-     * 资源的句柄是否被一个steam打开了
+     * 资源句柄是否被一个steam打开
      * <p>
      * Indicate whether this resource represents a handle with an open stream.
      * If {@code true}, the InputStream cannot be read multiple times,
@@ -126,6 +126,8 @@ public interface Resource extends InputStreamSource {
     long contentLength() throws IOException;
 
     /**
+     * 资源的最后修改时间
+     * <p>
      * Determine the last-modified timestamp for this resource.
      *
      * @throws IOException if the resource cannot be resolved
