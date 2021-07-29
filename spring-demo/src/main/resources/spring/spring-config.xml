@@ -4,5 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="testService" class="com.paven.service.impl.TestServiceImpl"/>
+    <bean id="testService" class="com.paven.service.impl.TestServiceImpl">
+    </bean>
+
+    <bean name="testService1" class="com.paven.service.impl.TestServiceImpl"></bean>
 </beans>

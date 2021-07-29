@@ -538,7 +538,9 @@ public class BeanDefinitionParserDelegate {
             // 解析元数据
             parseMetaElements(ele, bd);
 
+            // 解析look-up元素
             parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+            // 解析replace-method元素
             parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
             // 解析构造函数参数
@@ -684,6 +686,7 @@ public class BeanDefinitionParserDelegate {
      * Parse the meta elements underneath the given element, if any.
      */
     public void parseMetaElements(Element ele, BeanMetadataAttributeAccessor attributeAccessor) {
+        // 获取子元素
         NodeList nl = ele.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
@@ -745,6 +748,7 @@ public class BeanDefinitionParserDelegate {
         NodeList nl = beanEle.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
+            // 有效标签
             if (isCandidateElement(node) && nodeNameEquals(node, CONSTRUCTOR_ARG_ELEMENT)) {
                 parseConstructorArgElement((Element) node, bd);
             }
@@ -966,6 +970,7 @@ public class BeanDefinitionParserDelegate {
 
         boolean hasRefAttribute = ele.hasAttribute(REF_ATTRIBUTE);
         boolean hasValueAttribute = ele.hasAttribute(VALUE_ATTRIBUTE);
+        // 同时有ref属性和value属性 或 有ref属性或value属性且有子元素 就报错
         if ((hasRefAttribute && hasValueAttribute) || ((hasRefAttribute || hasValueAttribute) && subElement != null)) {
             error(elementName + " is only allowed to contain either 'ref' attribute OR 'value' attribute OR sub-element", ele);
         }
