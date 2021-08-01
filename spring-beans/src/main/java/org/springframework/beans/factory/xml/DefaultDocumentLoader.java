@@ -16,18 +16,17 @@
 
 package org.springframework.beans.factory.xml;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.xml.XmlValidationModeDetector;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 
-import org.springframework.util.xml.XmlValidationModeDetector;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Spring对DocumentLoader的默认实现，使用标准的 JAXP 配置的 XML 解析器
@@ -67,12 +66,14 @@ public class DefaultDocumentLoader implements DocumentLoader {
      */
     @Override
     public Document loadDocument(InputSource inputSource, EntityResolver entityResolver, ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
-
+        // 解析工厂类
         DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
         if (logger.isDebugEnabled()) {
             logger.debug("Using JAXP provider [" + factory.getClass().getName() + "]");
         }
+        // 解析器
         DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);
+        // 构建文档模型
         return builder.parse(inputSource);
     }
 

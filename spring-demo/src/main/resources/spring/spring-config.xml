@@ -4,8 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="testService" class="com.paven.service.impl.TestServiceImpl">
-    </bean>
+<!--    <bean id="testService" class="com.paven.service.impl.TestServiceImpl"/>-->
 
-    <bean name="testService1" class="com.paven.service.impl.TestServiceImpl"></bean>
+    <bean id="customBeanDefinitionRegistryPostProcessor" class="com.paven.processor.CustomBeanDefinitionRegistryPostProcessor"/>
+
+
 </beans>

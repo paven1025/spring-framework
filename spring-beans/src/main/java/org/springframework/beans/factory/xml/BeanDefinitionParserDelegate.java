@@ -16,56 +16,23 @@
 
 package org.springframework.beans.factory.xml;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanMetadataAttribute;
+import org.springframework.beans.BeanMetadataAttributeAccessor;
+import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.config.*;
+import org.springframework.beans.factory.parsing.*;
+import org.springframework.beans.factory.support.*;
+import org.springframework.core.env.Environment;
+import org.springframework.util.*;
+import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.springframework.beans.BeanMetadataAttribute;
-import org.springframework.beans.BeanMetadataAttributeAccessor;
-import org.springframework.beans.PropertyValue;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.config.RuntimeBeanNameReference;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.config.TypedStringValue;
-import org.springframework.beans.factory.parsing.BeanEntry;
-import org.springframework.beans.factory.parsing.ConstructorArgumentEntry;
-import org.springframework.beans.factory.parsing.ParseState;
-import org.springframework.beans.factory.parsing.PropertyEntry;
-import org.springframework.beans.factory.parsing.QualifierEntry;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
-import org.springframework.beans.factory.support.AutowireCandidateQualifier;
-import org.springframework.beans.factory.support.BeanDefinitionDefaults;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
-import org.springframework.beans.factory.support.LookupOverride;
-import org.springframework.beans.factory.support.ManagedArray;
-import org.springframework.beans.factory.support.ManagedList;
-import org.springframework.beans.factory.support.ManagedMap;
-import org.springframework.beans.factory.support.ManagedProperties;
-import org.springframework.beans.factory.support.ManagedSet;
-import org.springframework.beans.factory.support.MethodOverrides;
-import org.springframework.beans.factory.support.ReplaceOverride;
-import org.springframework.core.env.Environment;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.PatternMatchUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.util.xml.DomUtils;
+import java.util.*;
 
 /**
  * Stateful delegate class used to parse XML bean definitions.
@@ -332,6 +299,8 @@ public class BeanDefinitionParserDelegate {
     }
 
     /**
+     * 使用默认配置填充DocumentDefaultsDefinition，如果父类配置了属性，会覆盖
+     * <p>
      * Populate the given DocumentDefaultsDefinition instance with the default lazy-init,
      * autowire, dependency check settings, init-method, destroy-method and merge settings.
      * Support nested 'beans' element use cases by falling back to {@code parentDefaults}
@@ -430,6 +399,8 @@ public class BeanDefinitionParserDelegate {
     }
 
     /**
+     * 解析bean标签
+     * <p>
      * Parses the supplied {@code <bean>} element. May return {@code null}
      * if there were errors during parse. Errors are reported to the
      * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
@@ -439,27 +410,31 @@ public class BeanDefinitionParserDelegate {
         String id = ele.getAttribute(ID_ATTRIBUTE);
         // 解析name属性
         String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
-        // 分割name属性
+        // beanName列表
         List<String> aliases = new ArrayList<String>();
         if (StringUtils.hasLength(nameAttr)) {
+            // 分割name
             String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
             aliases.addAll(Arrays.asList(nameArr));
         }
-
+        // 记录id属性值
         String beanName = id;
+        // id值为空切别名列表不为空
         if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {
+            // 取出第一个作为beanName
             beanName = aliases.remove(0);
             if (logger.isDebugEnabled()) {
                 logger.debug("No XML 'id' specified - using '" + beanName + "' as bean name and " + aliases + " as aliases");
             }
         }
-
+        // 校验beanName唯一
         if (containingBean == null) {
             checkNameUniqueness(beanName, aliases, ele);
         }
-
+        // 解析bean标签属性并返回GenericBeanDefinition
         AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
         if (beanDefinition != null) {
+            // beanName为空
             if (!StringUtils.hasText(beanName)) {
                 try {
                     if (containingBean != null) {
@@ -483,6 +458,7 @@ public class BeanDefinitionParserDelegate {
                 }
             }
             String[] aliasesArray = StringUtils.toStringArray(aliases);
+            // 返回BeanDefinitionHolder
             return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
         }
 
@@ -530,10 +506,11 @@ public class BeanDefinitionParserDelegate {
             if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
                 parent = ele.getAttribute(PARENT_ATTRIBUTE);
             }
-            // 创建AbstractBeanDefinition保存属性
+            // 创建GenericBeanDefinition保存属性
             AbstractBeanDefinition bd = createBeanDefinition(className, parent);
             // 解析beanDefinition属性
             parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
+            // 设置description
             bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
             // 解析元数据
             parseMetaElements(ele, bd);

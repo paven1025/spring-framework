@@ -57,14 +57,15 @@ public class BeanDefinitionReaderUtils {
 			String parentName, String className, ClassLoader classLoader) throws ClassNotFoundException {
 
 		GenericBeanDefinition bd = new GenericBeanDefinition();
-		//
+		// 设置parentName
 		bd.setParentName(parentName);
 		if (className != null) {
-			// classLoader不为空，则使用传入的classLoader加载实例，否则只记录className
+			// classLoader不为空
 			if (classLoader != null) {
+				// 设置类类型
 				bd.setBeanClass(ClassUtils.forName(className, classLoader));
-			}
-			else {
+			} else {
+				// 设置类名
 				bd.setBeanClassName(className);
 			}
 		}
@@ -147,6 +148,7 @@ public class BeanDefinitionReaderUtils {
 			throws BeanDefinitionStoreException {
 
 		// Register bean definition under primary name.
+		// beanName
 		String beanName = definitionHolder.getBeanName();
 		// 注册beanDefinition
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());

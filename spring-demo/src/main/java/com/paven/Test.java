@@ -7,7 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author cpw
- * @date 2021/7/22 12:23 上午
+ * @date 2021/7/22 12:23 上午a
  */
 @Configuration
 @ComponentScan("com.paven")
@@ -19,6 +19,10 @@ public class Test {
 //        XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("classpath:/spring/spring-config.xml"));
 
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("classpath:/spring/spring-config.xml");
+        String[] definitionNames = classPathXmlApplicationContext.getBeanDefinitionNames();
+        for (String definitionName : definitionNames) {
+            System.out.println(definitionName);
+        }
         TestService testService1 = (TestService) classPathXmlApplicationContext.getBean("testService");
         testService1.sayHello(name);
 
