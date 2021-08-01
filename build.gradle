@@ -1130,6 +1130,17 @@ project("spring-framework-bom") {
 	}
 }
 
+project("spring-demo") {
+
+	dependencies {
+		compile(project(":spring-core"))
+		compile(project(":spring-aop"))
+		compile(project(":spring-beans"))
+		compile(project(":spring-context"))
+    }
+
+}
+
 configure(rootProject) {
 	description = "Spring Framework"
 

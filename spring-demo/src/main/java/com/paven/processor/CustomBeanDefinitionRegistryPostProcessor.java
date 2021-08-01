@@ -15,6 +15,6 @@ public class CustomBeanDefinitionRegistryPostProcessor implements BeanDefinition
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(TestServiceImpl.class);
-        registry.registerBeanDefinition("testService", builder.getBeanDefinition());
+        registry.registerBeanDefinition("testService", builder.getRawBeanDefinition());
     }
 }
