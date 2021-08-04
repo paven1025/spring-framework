@@ -46,20 +46,28 @@ public class SimpleAliasRegistry implements AliasRegistry {
     public void registerAlias(String name, String alias) {
         Assert.hasText(name, "'name' must not be empty");
         Assert.hasText(alias, "'alias' must not be empty");
+        // 对别名缓存加锁
         synchronized (this.aliasMap) {
+            // 别名与注册名相同不必保存别名
             if (alias.equals(name)) {
                 this.aliasMap.remove(alias);
-            } else {
+            }
+            // 别名与注册名不同
+            else {
+                // 取得注册名
                 String registeredName = this.aliasMap.get(alias);
                 if (registeredName != null) {
+                    // 新注册名与原注册名相同直接返回
                     if (registeredName.equals(name)) {
                         // An existing alias - no need to re-register
                         return;
                     }
+                    // 不允许覆盖，抛出异常
                     if (!allowAliasOverriding()) {
                         throw new IllegalStateException("Cannot register alias '" + alias + "' for name '" + name + "': It is already registered for name '" + registeredName + "'.");
                     }
                 }
+                // 循环引用检查
                 checkForAliasCircle(name, alias);
                 this.aliasMap.put(alias, name);
             }
@@ -83,6 +91,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
      */
     public boolean hasAlias(String name, String alias) {
         for (Map.Entry<String, String> entry : this.aliasMap.entrySet()) {
+            // 注册名
             String registeredName = entry.getValue();
             if (registeredName.equals(name)) {
                 String registeredAlias = entry.getKey();
@@ -185,6 +194,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
      * @see #hasAlias
      */
     protected void checkForAliasCircle(String name, String alias) {
+        // 已有别名
         if (hasAlias(alias, name)) {
             throw new IllegalStateException("Cannot register alias '" + alias + "' for name '" + name + "': Circular reference - '" + name + "' is a direct or indirect alias for '" + alias + "' already");
         }

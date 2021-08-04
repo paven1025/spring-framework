@@ -16,7 +16,7 @@ public class Test {
     public static void main(String[] args) {
         String name = "paven";
 
-//        XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("classpath:/spring/spring-config.xml"));
+        //XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("classpath:/spring/spring-config.xml"));
 
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("classpath:/spring/spring-config.xml");
         String[] definitionNames = classPathXmlApplicationContext.getBeanDefinitionNames();
