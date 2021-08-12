@@ -1,6 +1,6 @@
 package com.paven;
 
-import com.paven.service.TestService;
+import com.paven.service.TestService1;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -23,7 +23,7 @@ public class Test {
         for (String definitionName : definitionNames) {
             System.out.println(definitionName);
         }
-        TestService testService1 = (TestService) classPathXmlApplicationContext.getBean("testService");
+        TestService1 testService1 = (TestService1) classPathXmlApplicationContext.getBean("testService1");
         testService1.sayHello(name);
 
 //        FileSystemXmlApplicationContext fileXmlApplicationContext = new FileSystemXmlApplicationContext("//Users/cpw/source_code/spring-framework/spring-demo/src/main/resources/spring/spring-config.xml");

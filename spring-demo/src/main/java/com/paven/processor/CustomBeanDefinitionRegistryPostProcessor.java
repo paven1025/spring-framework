@@ -1,6 +1,6 @@
 package com.paven.processor;
 
-import com.paven.service.impl.TestServiceImpl;
+import com.paven.service.impl.TestService1Impl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -14,7 +14,7 @@ public class CustomBeanDefinitionRegistryPostProcessor implements BeanDefinition
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(TestServiceImpl.class);
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(TestService1Impl.class);
         registry.registerBeanDefinition("testService", builder.getRawBeanDefinition());
     }
 }

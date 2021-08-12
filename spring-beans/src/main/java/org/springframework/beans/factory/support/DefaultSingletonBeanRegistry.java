@@ -140,9 +140,13 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
      */
     protected void addSingleton(String beanName, Object singletonObject) {
         synchronized (this.singletonObjects) {
+            // 一级缓存中添加
             this.singletonObjects.put(beanName, (singletonObject != null ? singletonObject : NULL_OBJECT));
+            // 三级缓存中移除
             this.singletonFactories.remove(beanName);
+            // 二级缓存中移除
             this.earlySingletonObjects.remove(beanName);
+            // 添加到已注册的单例集合中
             this.registeredSingletons.add(beanName);
         }
     }
@@ -218,6 +222,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
     public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
         Assert.notNull(beanName, "'beanName' must not be null");
         synchronized (this.singletonObjects) {
+            // 一级缓存中获取bean
             Object singletonObject = this.singletonObjects.get(beanName);
             if (singletonObject == null) {
                 if (this.singletonsCurrentlyInDestruction) {
@@ -226,6 +231,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
                 if (logger.isDebugEnabled()) {
                     logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
                 }
+                // 创建前操作
                 beforeSingletonCreation(beanName);
                 boolean newSingleton = false;
                 boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
@@ -233,6 +239,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
                     this.suppressedExceptions = new LinkedHashSet<Exception>();
                 }
                 try {
+                    // ObjectFactory.getObject获取bean
                     singletonObject = singletonFactory.getObject();
                     newSingleton = true;
                 } catch (IllegalStateException ex) {
@@ -253,6 +260,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
                     if (recordSuppressedExceptions) {
                         this.suppressedExceptions = null;
                     }
+                    // 创建后操作 移除singletonsCurrentlyInCreation中的beanName
                     afterSingletonCreation(beanName);
                 }
                 if (newSingleton) {
@@ -452,7 +460,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
         if (alreadySeen != null && alreadySeen.contains(beanName)) {
             return false;
         }
+        // 取得bean真实name
         String canonicalName = canonicalName(beanName);
+        // 取得beanName依赖的bean
         Set<String> dependentBeans = this.dependentBeanMap.get(canonicalName);
         if (dependentBeans == null) {
             return false;

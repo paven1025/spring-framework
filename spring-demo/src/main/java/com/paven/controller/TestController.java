@@ -1,6 +1,6 @@
 package com.paven.controller;
 
-import com.paven.service.TestService;
+import com.paven.service.TestService1;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 public class TestController {
 
     @Resource
-    private TestService testService;
+    private TestService1 testService;
 
     public void handleController() {
         System.out.println("TestController...");

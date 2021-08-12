@@ -150,13 +150,18 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		}
 
 		// Set bean properties from init parameters.
+		// 1.保存init-param配置到PropertyValues
 		PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
 		if (!pvs.isEmpty()) {
 			try {
+				// 2.将当前Servlet对象转化为BeanWrapper
 				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+				// 3.创建资源加载器：ServletContextResourceLoader
 				ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
+				// 4.为Resource类型注册自定义属性编辑器
 				bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
 				initBeanWrapper(bw);
+				// 5.以Spring方式将pvs注入到BeanWrapper中
 				bw.setPropertyValues(pvs, true);
 			}
 			catch (BeansException ex) {
@@ -168,6 +173,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		}
 
 		// Let subclasses do whatever initialization they like.
+		// 6.子类来实现，实现自定义的初始化逻辑
 		initServletBean();
 
 		if (logger.isDebugEnabled()) {
@@ -231,14 +237,15 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		 */
 		public ServletConfigPropertyValues(ServletConfig config, Set<String> requiredProperties)
 				throws ServletException {
-
+			// 必填参数
 			Set<String> missingProps = (!CollectionUtils.isEmpty(requiredProperties) ?
 					new HashSet<String>(requiredProperties) : null);
-
+			// 取得 init-param 的 param-name 集合
 			Enumeration<String> paramNames = config.getInitParameterNames();
 			while (paramNames.hasMoreElements()) {
 				String property = paramNames.nextElement();
 				Object value = config.getInitParameter(property);
+				// 记录配置参数
 				addPropertyValue(new PropertyValue(property, value));
 				if (missingProps != null) {
 					missingProps.remove(property);

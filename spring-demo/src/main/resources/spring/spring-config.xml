@@ -4,9 +4,15 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-<!--    <bean id="testService" class="com.paven.service.impl.TestServiceImpl"/>-->
+    <bean id="testService1" class="com.paven.service.impl.TestService1Impl">
+        <!--        <constructor-arg ref="testService2"/>-->
+        <property name="testService" ref="testService2"/>
+    </bean>
+    <bean id="testService2" class="com.paven.service.impl.TestService2Impl">
+        <!--        <constructor-arg ref="testService1"/>-->
+        <property name="testService" ref="testService1"/>
+    </bean>
 
-    <bean id="customBeanDefinitionRegistryPostProcessor" class="com.paven.processor.CustomBeanDefinitionRegistryPostProcessor"/>
-
+    <bean id="customBeanDefinitionRegistryPostProcessor" class="com.paven.processor.CustomBeanDefinitionRegistryPostProcessor" />
 
 </beans>
